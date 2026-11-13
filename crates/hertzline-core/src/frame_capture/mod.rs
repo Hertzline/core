@@ -1,12 +1,19 @@
-//! Frame-time capture probe and metrics helpers (HZ-006 / D3).
+//! Frame-time capture: probe, CSV ingest, and pipeline (HZ-006 / HZ-011).
 //!
 //! Capture backends are selected per OS. Probe failure yields an explicit
 //! unavailable / not-possible state -- never invented samples.
 
 mod metrics;
+mod parse;
+mod pipeline;
 mod probe;
 
 pub use metrics::{FrameTimeStats, compute_stats_ms};
+pub use parse::{FrameParseError, parse_mangohud_log, parse_presentmon_csv};
+pub use pipeline::{
+    FramePipeline, FramePipelineError, FramePipelineResult, frame_summary_from_probe_and_samples,
+    frame_summary_from_samples_ms,
+};
 pub use probe::{
     CaptureCapability, CaptureMethod, ProbeReport, ProbeStatus, probe_frame_capture,
 };

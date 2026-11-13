@@ -1,6 +1,6 @@
 //! Hertzline core library (measurement, export; spikes D1 / D3 / D4).
 //!
-//! No UI. No permanent elevation. Collectors and actions land in later tasks.
+//! No UI. No permanent elevation. Frame pipeline: HZ-011. Collectors: HZ-012+.
 
 pub mod frame_capture;
 pub mod ipc;

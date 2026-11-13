@@ -1,7 +1,7 @@
 //! Measurement session model and CSV/JSON export (HZ-010 / AC-1.8).
 //!
-//! Collectors (HZ-011, HZ-012) fill the session; this module owns the
-//! canonical field list so CSV and JSON always share names and units.
+//! Frame pipeline (HZ-011) and hardware collectors (HZ-012) fill the session;
+//! this module owns the canonical field list so CSV and JSON share names/units.
 
 mod export;
 mod model;

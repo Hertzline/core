@@ -78,6 +78,14 @@ Primary stack is `sysinfo` 0.40.3 (MIT). Missing sensors are labeled unavailable
 cargo test -p hertzline-core --locked session::
 ```
 
+### Frame-time pipeline (HZ-011 / AC-1.1, AC-1.5--AC-1.7)
+
+`FramePipeline::open()` probes the host source, ingests PresentMon CSV (`MsBetweenPresents`) or MangoHud logs (`frametime`), then `finish()` / `finish_into(session)` fills avg FPS, 1% / 0.1% lows, and frame-time variance. Probe failure or macOS not-possible yields `Unavailable` (never invented FPS).
+
+```bash
+cargo test -p hertzline-core --locked frame_capture::
+```
+
 ## License
 
 [MIT](LICENSE)
