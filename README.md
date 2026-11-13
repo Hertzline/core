@@ -86,6 +86,20 @@ cargo test -p hertzline-core --locked session::
 cargo test -p hertzline-core --locked frame_capture::
 ```
 
+### Collectors (HZ-012 / AC-1.2--AC-1.4)
+
+`collectors` fills `HardwareSummary`, `DiskSummary`, and `NetworkSummary` on a session:
+
+- Hardware: `sysinfo` CPU/RAM/GPU/VRAM/temps when exposed; GPU clocks and throttle stay unavailable (D4).
+- Disk: timed `Disk::usage` read/write throughput; queue depth unavailable until an OS path is wired.
+- Network: user-chosen host via injectable ping samples (OS `ping` or mocks); latency, jitter, packet loss.
+
+Missing sensors are labeled unavailable. Unit tests use labeled mocks.
+
+```bash
+cargo test -p hertzline-core --locked collectors::
+```
+
 ## License
 
 [MIT](LICENSE)

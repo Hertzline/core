@@ -1,7 +1,7 @@
 //! Hardware / disk sensor probe (HZ-007 / D4).
 //!
 //! Prefer OS APIs via SPDX MIT `sysinfo`. Missing sensors are labeled
-//! unavailable -- never invented. Full collectors land in HZ-012.
+//! unavailable -- never invented. Session collectors: `crate::collectors` (HZ-012).
 
 mod probe;
 
