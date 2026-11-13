@@ -7,3 +7,6 @@
 spikes/d1-tauri/src-tauri/gen/
 spikes/d1-avalonia/bin/
 spikes/d1-avalonia/obj/
+spikes/d3-tools/*.exe
+spikes/d3-tools/*.csv
+spikes/d3-tools/*.etl

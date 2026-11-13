@@ -20,3 +20,8 @@ official package metadata at implementation time (2026-11-13).
 - Avalonia 12.1.6 -- MIT (https://www.nuget.org/packages/Avalonia/12.1.6)
 - Avalonia.Desktop 12.1.6 -- MIT (https://www.nuget.org/packages/Avalonia.Desktop)
 - Avalonia.Themes.Fluent 12.1.6 -- MIT (https://www.nuget.org/packages/Avalonia.Themes.Fluent)
+
+## Frame capture (D3; not linked into the crate yet)
+
+- Intel PresentMon 2.6.0 -- MIT (https://github.com/GameTechDev/PresentMon; LICENSE.txt)
+- MangoHud 0.8.4 -- MIT (https://github.com/flightlessmango/MangoHud; LICENSE)
