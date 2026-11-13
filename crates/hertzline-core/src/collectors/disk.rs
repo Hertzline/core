@@ -21,10 +21,7 @@ pub struct DiskByteCounters {
 /// Pluggable disk IO source (mocks labeled in tests).
 pub trait DiskIoSource {
     /// Measure bytes transferred over roughly `interval`; return counters + elapsed seconds.
-    fn measure_interval(
-        &mut self,
-        interval: Duration,
-    ) -> Result<(DiskByteCounters, f64), String>;
+    fn measure_interval(&mut self, interval: Duration) -> Result<(DiskByteCounters, f64), String>;
 }
 
 /// Build a disk summary from interval byte counts over `elapsed_secs`.
@@ -107,10 +104,7 @@ impl<S: DiskIoSource> DiskCollector<S> {
 pub struct SysinfoDiskIo;
 
 impl DiskIoSource for SysinfoDiskIo {
-    fn measure_interval(
-        &mut self,
-        interval: Duration,
-    ) -> Result<(DiskByteCounters, f64), String> {
+    fn measure_interval(&mut self, interval: Duration) -> Result<(DiskByteCounters, f64), String> {
         let mut disks = Disks::new_with_refreshed_list()
             .map_err(|e| format!("Disks::new_with_refreshed_list failed: {e}"))?;
         // Prime so the next refresh reports bytes since this point.

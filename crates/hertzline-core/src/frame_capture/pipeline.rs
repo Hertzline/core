@@ -122,9 +122,9 @@ pub fn frame_summary_from_probe_and_samples(
         }
         ProbeStatus::Available => match compute_stats_ms(frame_times_ms) {
             Some(stats) => FrameSummary::from_stats(&stats),
-            None => FrameSummary::unavailable(
-                "insufficient positive frame samples (need at least 2)",
-            ),
+            None => {
+                FrameSummary::unavailable("insufficient positive frame samples (need at least 2)")
+            }
         },
     }
 }
@@ -135,9 +135,7 @@ pub fn frame_summary_from_probe_and_samples(
 pub fn frame_summary_from_samples_ms(frame_times_ms: &[f64]) -> FrameSummary {
     match compute_stats_ms(frame_times_ms) {
         Some(stats) => FrameSummary::from_stats(&stats),
-        None => FrameSummary::unavailable(
-            "insufficient positive frame samples (need at least 2)",
-        ),
+        None => FrameSummary::unavailable("insufficient positive frame samples (need at least 2)"),
     }
 }
 
@@ -169,9 +167,7 @@ impl std::error::Error for FramePipelineError {}
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::frame_capture::{
-        CaptureCapability, CaptureMethod, ProbeStatus,
-    };
+    use crate::frame_capture::{CaptureCapability, CaptureMethod, ProbeStatus};
     use crate::session::{MetricF64, SessionMeta};
 
     fn mock_probe(status: ProbeStatus, detail: &str) -> ProbeReport {
@@ -261,26 +257,16 @@ mod tests {
 
     #[test]
     fn ingest_blocked_when_probe_unavailable() {
-        let mut pipe = FramePipeline::open_with_probe(mock_probe(
-            ProbeStatus::Unavailable,
-            "no binary",
-        ));
+        let mut pipe =
+            FramePipeline::open_with_probe(mock_probe(ProbeStatus::Unavailable, "no binary"));
         let csv = "Application,MsBetweenPresents\ngame.exe,16.0\ngame.exe,16.0\n";
-        let err = pipe
-            .ingest_presentmon_csv(csv)
-            .expect_err("blocked");
-        assert!(matches!(
-            err,
-            FramePipelineError::ProbeUnavailable { .. }
-        ));
+        let err = pipe.ingest_presentmon_csv(csv).expect_err("blocked");
+        assert!(matches!(err, FramePipelineError::ProbeUnavailable { .. }));
     }
 
     #[test]
     fn mock_presentmon_ingest_then_finish_into_session() {
-        let mut pipe = FramePipeline::open_with_probe(mock_probe(
-            ProbeStatus::Available,
-            "mock",
-        ));
+        let mut pipe = FramePipeline::open_with_probe(mock_probe(ProbeStatus::Available, "mock"));
         let csv = "\
 Application,ProcessID,MsBetweenPresents
 game.exe,1,10.0
@@ -310,10 +296,7 @@ game.exe,1,50.0
 
     #[test]
     fn available_probe_insufficient_samples() {
-        let mut pipe = FramePipeline::open_with_probe(mock_probe(
-            ProbeStatus::Available,
-            "mock",
-        ));
+        let mut pipe = FramePipeline::open_with_probe(mock_probe(ProbeStatus::Available, "mock"));
         pipe.push_ms(16.0);
         let result = pipe.finish();
         match result.summary.avg_fps {

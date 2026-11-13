@@ -401,21 +401,20 @@ fn probe_optional_nvml() -> OptionalRuntime {
 fn find_nvml_library() -> Option<PathBuf> {
     #[cfg(target_os = "windows")]
     {
-        for name in ["nvml.dll"] {
-            if let Some(p) = find_on_path(name) {
-                return Some(p);
-            }
-            if let Ok(root) = std::env::var("ProgramW6432") {
-                let candidate = PathBuf::from(root)
-                    .join("NVIDIA Corporation")
-                    .join("NVSMI")
-                    .join(name);
-                if candidate.is_file() {
-                    return Some(candidate);
-                }
-            }
-            // Driver store path varies; presence of nvidia-smi is enough for the spike.
+        let name = "nvml.dll";
+        if let Some(p) = find_on_path(name) {
+            return Some(p);
         }
+        if let Ok(root) = std::env::var("ProgramW6432") {
+            let candidate = PathBuf::from(root)
+                .join("NVIDIA Corporation")
+                .join("NVSMI")
+                .join(name);
+            if candidate.is_file() {
+                return Some(candidate);
+            }
+        }
+        // Driver store path varies; presence of nvidia-smi is enough for the spike.
         None
     }
     #[cfg(target_os = "linux")]

@@ -6,7 +6,7 @@
 mod export;
 mod model;
 
-pub use export::{ExportDocument, ExportRow, export_csv, export_json, parse_csv, parse_json};
+pub use export::{export_csv, export_json, parse_csv, parse_json, ExportDocument, ExportRow};
 pub use model::{
     DiskSummary, FrameSummary, HardwareSummary, MeasurementSession, MetricF64, NetworkSummary,
     SessionMeta, TextMetric,

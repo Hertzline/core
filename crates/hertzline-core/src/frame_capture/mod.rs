@@ -8,15 +8,13 @@ mod parse;
 mod pipeline;
 mod probe;
 
-pub use metrics::{FrameTimeStats, compute_stats_ms};
-pub use parse::{FrameParseError, parse_mangohud_log, parse_presentmon_csv};
+pub use metrics::{compute_stats_ms, FrameTimeStats};
+pub use parse::{parse_mangohud_log, parse_presentmon_csv, FrameParseError};
 pub use pipeline::{
-    FramePipeline, FramePipelineError, FramePipelineResult, frame_summary_from_probe_and_samples,
-    frame_summary_from_samples_ms,
+    frame_summary_from_probe_and_samples, frame_summary_from_samples_ms, FramePipeline,
+    FramePipelineError, FramePipelineResult,
 };
-pub use probe::{
-    CaptureCapability, CaptureMethod, ProbeReport, ProbeStatus, probe_frame_capture,
-};
+pub use probe::{probe_frame_capture, CaptureCapability, CaptureMethod, ProbeReport, ProbeStatus};
 
 #[cfg(test)]
 mod tests {

@@ -73,9 +73,7 @@ mod tests {
 
     #[test]
     fn helper_allow_list_ping() {
-        let res = helper_dispatch(&HelperRequest {
-            op: HelperOp::Ping,
-        });
+        let res = helper_dispatch(&HelperRequest { op: HelperOp::Ping });
         assert!(res.accepted);
         assert_eq!(res.detail, "helper_pong");
     }

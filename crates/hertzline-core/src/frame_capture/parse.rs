@@ -85,9 +85,7 @@ pub fn parse_mangohud_log(text: &str) -> Result<Vec<f64>, FrameParseError> {
 
     for line in lines.by_ref() {
         let cols = split_csv_line(line);
-        if cols
-            .iter()
-            .any(|c| eq_ignore_ascii_case(c, "frametime"))
+        if cols.iter().any(|c| eq_ignore_ascii_case(c, "frametime"))
             && cols.iter().any(|c| eq_ignore_ascii_case(c, "fps"))
         {
             frametime_col = cols

@@ -2,9 +2,7 @@
 
 use serde::{Deserialize, Serialize};
 
-use super::model::{
-    MeasurementSession, MetricF64, SESSION_SCHEMA_VERSION, TextMetric,
-};
+use super::model::{MeasurementSession, MetricF64, TextMetric, SESSION_SCHEMA_VERSION};
 
 /// One export cell: name + unit + optional value / unavailable reason.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -90,14 +88,9 @@ fn unit_for_unavailable_f64(name: &str) -> &'static str {
         "sample_count" => "count",
         "avg_fps" | "low_1pct_fps" | "low_0_1pct_fps" => "fps",
         "frame_time_variance_ms2" => "ms^2",
-        "avg_frame_time_ms"
-        | "network_latency_ms"
-        | "network_jitter_ms"
-        | "duration_ms" => "ms",
+        "avg_frame_time_ms" | "network_latency_ms" | "network_jitter_ms" | "duration_ms" => "ms",
         "cpu_usage_percent" | "gpu_usage_percent" | "network_packet_loss_percent" => "percent",
-        "ram_used_bytes" | "ram_total_bytes" | "vram_used_bytes" | "vram_total_bytes" => {
-            "bytes"
-        }
+        "ram_used_bytes" | "ram_total_bytes" | "vram_used_bytes" | "vram_total_bytes" => "bytes",
         "cpu_temp_celsius" | "gpu_temp_celsius" => "celsius",
         "cpu_clock_mhz" | "gpu_clock_mhz" => "mhz",
         "disk_read_bytes_per_sec" | "disk_write_bytes_per_sec" => "bytes_per_sec",
@@ -227,16 +220,8 @@ pub fn export_rows(session: &MeasurementSession) -> Vec<ExportRow> {
         "gpu_temp_celsius",
         &session.hardware.gpu_temp_celsius,
     );
-    push_f64(
-        &mut rows,
-        "cpu_clock_mhz",
-        &session.hardware.cpu_clock_mhz,
-    );
-    push_f64(
-        &mut rows,
-        "gpu_clock_mhz",
-        &session.hardware.gpu_clock_mhz,
-    );
+    push_f64(&mut rows, "cpu_clock_mhz", &session.hardware.cpu_clock_mhz);
+    push_f64(&mut rows, "gpu_clock_mhz", &session.hardware.gpu_clock_mhz);
     push_text(&mut rows, "throttling", &session.hardware.throttling);
 
     push_f64(
@@ -300,17 +285,14 @@ pub fn export_csv(session: &MeasurementSession) -> String {
         out.push(',');
         out.push_str(&escape_csv(row.value.as_deref().unwrap_or("")));
         out.push(',');
-        out.push_str(&escape_csv(
-            row.unavailable_reason.as_deref().unwrap_or(""),
-        ));
+        out.push_str(&escape_csv(row.unavailable_reason.as_deref().unwrap_or("")));
         out.push('\n');
     }
     out
 }
 
 fn escape_csv(field: &str) -> String {
-    if field.contains(',') || field.contains('"') || field.contains('\n') || field.contains('\r')
-    {
+    if field.contains(',') || field.contains('"') || field.contains('\n') || field.contains('\r') {
         let escaped = field.replace('"', "\"\"");
         format!("\"{escaped}\"")
     } else {
@@ -321,9 +303,7 @@ fn escape_csv(field: &str) -> String {
 /// Parse CSV produced by [`export_csv`] back to rows.
 pub fn parse_csv(text: &str) -> Result<Vec<ExportRow>, String> {
     let mut lines = text.lines();
-    let header = lines
-        .next()
-        .ok_or_else(|| "csv: empty".to_string())?;
+    let header = lines.next().ok_or_else(|| "csv: empty".to_string())?;
     if header != "name,unit,value,unavailable_reason" {
         return Err(format!("csv: unexpected header: {header}"));
     }
@@ -397,8 +377,8 @@ mod tests {
     use super::*;
     use crate::frame_capture::compute_stats_ms;
     use crate::session::model::{
-        DiskSummary, FrameSummary, HardwareSummary, MeasurementSession, MetricF64,
-        NetworkSummary, SessionMeta, TextMetric,
+        DiskSummary, FrameSummary, HardwareSummary, MeasurementSession, MetricF64, NetworkSummary,
+        SessionMeta, TextMetric,
     };
 
     fn mock_completed_session() -> MeasurementSession {
@@ -442,12 +422,18 @@ mod tests {
         session
     }
 
-    fn field_map(rows: &[ExportRow]) -> std::collections::BTreeMap<String, (String, Option<String>, Option<String>)> {
+    fn field_map(
+        rows: &[ExportRow],
+    ) -> std::collections::BTreeMap<String, (String, Option<String>, Option<String>)> {
         rows.iter()
             .map(|r| {
                 (
                     r.name.clone(),
-                    (r.unit.clone(), r.value.clone(), r.unavailable_reason.clone()),
+                    (
+                        r.unit.clone(),
+                        r.value.clone(),
+                        r.unavailable_reason.clone(),
+                    ),
                 )
             })
             .collect()

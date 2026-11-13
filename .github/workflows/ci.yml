@@ -1,4 +1,6 @@
-# HZ-004 D1 spike CI. Actions pinned to commit SHAs (REPOS.md / RULES.md).
+# Measurement CI matrix (HZ-013): windows/ubuntu/macos + lint + license audit.
+# Actions and reusable workflows pinned to commit SHAs (REPOS.md / RULES.md).
+# Hertzline/.github pin: f4f947f31a5da82d0ca4828917490d2a1d1217b0 (HZ-003).
 name: ci
 
 on:
@@ -11,8 +13,41 @@ permissions:
   contents: read
 
 jobs:
+  shared:
+    uses: Hertzline/.github/.github/workflows/reusable-ci.yml@f4f947f31a5da82d0ca4828917490d2a1d1217b0
+    with:
+      meta-ref: f4f947f31a5da82d0ca4828917490d2a1d1217b0
+      pin-check: true
+      license-audit: true
+      has-secrets: false
+
+  lint:
+    name: lint (${{ matrix.os }})
+    needs: [shared]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Rust toolchain
+        uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
+        with:
+          toolchain: stable
+          components: rustfmt, clippy
+
+      - name: rustfmt
+        run: cargo fmt -p hertzline-core -- --check
+
+      - name: clippy (zero warnings)
+        run: cargo clippy -p hertzline-core --locked -- -D warnings
+
   core-test:
     name: core-test (${{ matrix.os }})
+    needs: [shared]
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -27,12 +62,14 @@ jobs:
         with:
           toolchain: stable
 
-      - name: Test hertzline-core
+      - name: Test hertzline-core (zero warnings)
+        env:
+          RUSTFLAGS: "-D warnings"
         run: cargo test -p hertzline-core --locked
-        # shortcut: --locked after first Cargo.lock commit; regenerate lock on dep bumps
 
   d1-tauri-build:
     name: d1-tauri (${{ matrix.os }})
+    needs: [shared]
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -89,6 +126,7 @@ jobs:
 
   d1-avalonia-build:
     name: d1-avalonia (${{ matrix.os }})
+    needs: [shared]
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false

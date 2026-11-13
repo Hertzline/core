@@ -20,8 +20,15 @@ Library only: no UI, no permanent elevation.
 ## Build
 
 ```bash
-cargo test -p hertzline-core
+cargo test -p hertzline-core --locked
+cargo fmt -p hertzline-core -- --check
+cargo clippy -p hertzline-core --locked -- -D warnings
+cargo deny check licenses
 ```
+
+CI (`ci` workflow): `windows-latest`, `ubuntu-latest`, `macos-latest` for lint +
+`hertzline-core` tests; shared job runs pin-check + license audit via
+`Hertzline/.github` reusable workflow (SHA pinned in `.github/workflows/ci.yml`).
 
 ### D1 Tauri spike
 

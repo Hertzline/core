@@ -8,13 +8,13 @@ mod hardware;
 mod network;
 
 pub use disk::{
-    DiskByteCounters, DiskCollector, DiskIoSource, SysinfoDiskIo, disk_summary_from_delta,
+    disk_summary_from_delta, DiskByteCounters, DiskCollector, DiskIoSource, SysinfoDiskIo,
 };
 pub use hardware::{
-    HardwareCollector, HardwareSample, HardwareSampler, SysinfoHardwareSampler,
-    hardware_summary_from_sample,
+    hardware_summary_from_sample, HardwareCollector, HardwareSample, HardwareSampler,
+    SysinfoHardwareSampler,
 };
 pub use network::{
-    NetworkCollector, OsPingProbe, PingProbe, PingSample, StaticPingProbe,
-    network_summary_from_samples, parse_ping_output, summarize_rtt_ms,
+    network_summary_from_samples, parse_ping_output, summarize_rtt_ms, NetworkCollector,
+    OsPingProbe, PingProbe, PingSample, StaticPingProbe,
 };

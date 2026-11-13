@@ -53,15 +53,15 @@ pub struct ProbeReport {
 pub fn probe_frame_capture() -> ProbeReport {
     #[cfg(target_os = "windows")]
     {
-        return probe_windows();
+        probe_windows()
     }
     #[cfg(target_os = "linux")]
     {
-        return probe_linux();
+        probe_linux()
     }
     #[cfg(target_os = "macos")]
     {
-        return probe_macos();
+        probe_macos()
     }
     #[cfg(not(any(target_os = "windows", target_os = "linux", target_os = "macos")))]
     {

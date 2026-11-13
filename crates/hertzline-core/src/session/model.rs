@@ -93,10 +93,7 @@ impl FrameSummary {
             avg_fps: MetricF64::available(stats.avg_fps, "fps"),
             low_1pct_fps: MetricF64::available(stats.low_1pct_fps, "fps"),
             low_0_1pct_fps: MetricF64::available(stats.low_0_1pct_fps, "fps"),
-            frame_time_variance_ms2: MetricF64::available(
-                stats.frame_time_variance_ms2,
-                "ms^2",
-            ),
+            frame_time_variance_ms2: MetricF64::available(stats.frame_time_variance_ms2, "ms^2"),
             avg_frame_time_ms: MetricF64::available(stats.avg_frame_time_ms, "ms"),
         }
     }

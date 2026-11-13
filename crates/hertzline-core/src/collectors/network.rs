@@ -222,7 +222,9 @@ fn extract_time_ms(line: &str) -> Option<f64> {
         }
         return None;
     }
-    num.parse::<f64>().ok().filter(|v| v.is_finite() && *v >= 0.0)
+    num.parse::<f64>()
+        .ok()
+        .filter(|v| v.is_finite() && *v >= 0.0)
 }
 
 /// Network collector for a user-chosen host.
@@ -278,15 +280,9 @@ mod tests {
     fn mock_rtt_summary_latency_jitter_loss() {
         // mock: 3 hits + 1 loss
         let samples = vec![
-            PingSample {
-                rtt_ms: Some(10.0),
-            },
-            PingSample {
-                rtt_ms: Some(14.0),
-            },
-            PingSample {
-                rtt_ms: Some(12.0),
-            },
+            PingSample { rtt_ms: Some(10.0) },
+            PingSample { rtt_ms: Some(14.0) },
+            PingSample { rtt_ms: Some(12.0) },
             PingSample { rtt_ms: None },
         ];
         let s = summarize_rtt_ms(&samples).expect("summary");
@@ -341,12 +337,8 @@ mod tests {
         let mut collector = NetworkCollector::new(
             StaticPingProbe {
                 samples: Ok(vec![
-                    PingSample {
-                        rtt_ms: Some(20.0),
-                    },
-                    PingSample {
-                        rtt_ms: Some(22.0),
-                    },
+                    PingSample { rtt_ms: Some(20.0) },
+                    PingSample { rtt_ms: Some(22.0) },
                 ]),
             },
             "mock.host",

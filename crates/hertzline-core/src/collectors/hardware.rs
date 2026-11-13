@@ -92,9 +92,7 @@ pub fn hardware_summary_from_sample(sample: &HardwareSample) -> HardwareSummary 
         ),
         throttling: match &sample.throttling {
             Some(v) => TextMetric::available(v.clone()),
-            None => TextMetric::unavailable(
-                "throttle flag not in sysinfo primary stack (D4)",
-            ),
+            None => TextMetric::unavailable("throttle flag not in sysinfo primary stack (D4)"),
         },
     }
 }
@@ -216,7 +214,9 @@ impl HardwareSampler for SysinfoHardwareSampler {
                 }
                 let label = c.label().to_ascii_lowercase();
                 if sample.cpu_temp_celsius.is_none()
-                    && (label.contains("cpu") || label.contains("package") || label.contains("tdie"))
+                    && (label.contains("cpu")
+                        || label.contains("package")
+                        || label.contains("tdie"))
                 {
                     sample.cpu_temp_celsius = Some(t);
                 } else if sample.gpu_temp_celsius.is_none()

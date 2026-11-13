@@ -11,6 +11,9 @@ official package metadata at implementation time (2026-11-13).
 - sysinfo 0.40.3 -- MIT (https://crates.io/crates/sysinfo/0.40.3; LICENSE on disk under spikes/d4-licenses/)
 - tauri 2.12.5 -- Apache-2.0 OR MIT (https://crates.io/crates/tauri/2.12.5)
 - tauri-build 2.7.4 -- Apache-2.0 OR MIT (https://crates.io/crates/tauri-build/2.7.4)
+- Tauri spike transitive MPL-2.0 (file-level copyleft; cssparser, cssparser-macros,
+  dtoa-short, option-ext, selectors via tauri-utils / dirs) -- allowed in deny.toml
+  for the D1 spike path only; not an approval of LibreHardwareMonitor (D4)
 
 ## npm
 
