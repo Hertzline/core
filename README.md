@@ -70,6 +70,14 @@ cargo run -p hertzline-core --example d4_probe --locked
 
 Primary stack is `sysinfo` 0.40.3 (MIT). Missing sensors are labeled unavailable. See `spikes/D4.md`.
 
+### Session export (HZ-010 / AC-1.8)
+
+`MeasurementSession` exports CSV and JSON from one ordered field list (identical names and units). Round-trip tests live in `session::export`.
+
+```bash
+cargo test -p hertzline-core --locked session::
+```
+
 ## License
 
 [MIT](LICENSE)
