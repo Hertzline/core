@@ -14,6 +14,8 @@ Library only: no UI, no permanent elevation.
 | `spikes/D1.md` | Desktop stack decision evidence |
 | `spikes/D3.md` | Frame-time capture decision evidence |
 | `spikes/d3-tools/` | Optional PresentMon download for local probe (gitignored binaries) |
+| `spikes/D4.md` | Sensor sources + license decision evidence |
+| `spikes/d4-licenses/` | Verified license texts (sysinfo MIT; LHM MPL rejected; nvml-wrapper) |
 
 ## Build
 
@@ -58,6 +60,15 @@ cargo run -p hertzline-core --example d3_probe --locked
 ```
 
 On Windows, set `HERTZLINE_PRESENTMON` to a PresentMon 2.6.0 console binary for an `available` probe (see `spikes/d3-tools/README.md`). Real-time ETW needs admin or the Performance Log Users group.
+
+### D4 sensors probe
+
+```bash
+cargo test -p hertzline-core --locked
+cargo run -p hertzline-core --example d4_probe --locked
+```
+
+Primary stack is `sysinfo` 0.40.3 (MIT). Missing sensors are labeled unavailable. See `spikes/D4.md`.
 
 ## License
 
