@@ -1,7 +1,9 @@
 //! Per-OS frame-time source probe (AC-1.5, AC-1.6, AC-1.7).
 
 use serde::{Deserialize, Serialize};
-use std::path::{Path, PathBuf};
+#[cfg(any(target_os = "windows", target_os = "linux"))]
+use std::path::PathBuf;
+#[cfg(any(target_os = "windows", target_os = "linux"))]
 use std::process::Command;
 
 /// High-level capability for the host OS capture path.
@@ -230,6 +232,7 @@ fn probe_macos() -> ProbeReport {
     }
 }
 
+#[cfg(any(target_os = "windows", target_os = "linux"))]
 fn find_on_path(file_name: &str) -> Option<PathBuf> {
     let path_var = std::env::var_os("PATH")?;
     for dir in std::env::split_paths(&path_var) {
@@ -245,7 +248,6 @@ fn find_on_path(file_name: &str) -> Option<PathBuf> {
             }
         }
     }
-    let _ = Path::new(file_name);
     None
 }
 
