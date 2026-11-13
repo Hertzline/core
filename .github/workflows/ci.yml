@@ -67,48 +67,25 @@ jobs:
         working-directory: spikes/d1-tauri
         run: npx tauri build --no-bundle
 
-      - name: Smoke IPC (Windows)
-        if: runner.os == 'Windows'
+      - name: Smoke IPC (no window)
         env:
           HERTZLINE_D1_SMOKE: "1"
-        shell: pwsh
-        run: |
-          $exe = Get-ChildItem -Path target/release -Filter "d1-tauri.exe" -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
-          if (-not $exe) { $exe = Get-ChildItem -Path spikes/d1-tauri/src-tauri/target/release -Filter "d1-tauri.exe" -ErrorAction SilentlyContinue | Select-Object -First 1 }
-          if (-not $exe) { Get-ChildItem -Path . -Filter "d1-tauri.exe" -Recurse | Select-Object -First 5 FullName; throw "d1-tauri.exe not found" }
-          $sw = [System.Diagnostics.Stopwatch]::StartNew()
-          & $exe.FullName
-          $code = $LASTEXITCODE
-          $sw.Stop()
-          Write-Host "smoke_exit=$code cold_ms=$($sw.ElapsedMilliseconds) path=$($exe.FullName) size=$($exe.Length)"
-          if ($code -ne 0) { exit $code }
-
-      - name: Smoke IPC (Linux xvfb)
-        if: runner.os == 'Linux'
-        env:
-          HERTZLINE_D1_SMOKE: "1"
+        shell: bash
         run: |
           set -euo pipefail
-          sudo apt-get install -y xvfb
-          bin="$(find target/release spikes/d1-tauri/src-tauri/target/release -name d1-tauri -type f 2>/dev/null | head -n1)"
-          test -n "$bin"
-          start=$(date +%s%3N)
-          xvfb-run -a "$bin"
-          end=$(date +%s%3N)
-          echo "smoke_exit=0 cold_ms=$((end-start)) path=$bin size=$(wc -c < "$bin")"
-
-      - name: Smoke IPC (macOS)
-        if: runner.os == 'macOS'
-        env:
-          HERTZLINE_D1_SMOKE: "1"
-        run: |
-          set -euo pipefail
-          bin="$(find target/release spikes/d1-tauri/src-tauri/target/release -name d1-tauri -type f 2>/dev/null | head -n1)"
-          test -n "$bin"
-          start=$(python3 -c 'import time; print(int(time.time()*1000))')
-          "$bin"
-          end=$(python3 -c 'import time; print(int(time.time()*1000))')
-          echo "smoke_exit=0 cold_ms=$((end-start)) path=$bin size=$(wc -c < "$bin")"
+          if [[ "${RUNNER_OS}" == "Windows" ]]; then
+            bin="$(find target/release -name 'd1-tauri.exe' -type f | head -n1)"
+          else
+            bin="$(find target/release -name d1-tauri -type f | head -n1)"
+          fi
+          test -n "${bin}"
+          start_ms="$(python3 -c 'import time; print(int(time.time()*1000))')"
+          "${bin}"
+          code=$?
+          end_ms="$(python3 -c 'import time; print(int(time.time()*1000))')"
+          size="$(wc -c < "${bin}" | tr -d ' ')"
+          echo "smoke_exit=${code} cold_ms=$((end_ms-start_ms)) path=${bin} size=${size}"
+          test "${code}" -eq 0
 
   d1-avalonia-build:
     name: d1-avalonia (${{ matrix.os }})

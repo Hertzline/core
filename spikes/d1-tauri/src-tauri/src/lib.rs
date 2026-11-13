@@ -17,26 +17,29 @@ fn helper_ping() -> hertzline_core::ipc::HelperResponse {
     })
 }
 
+fn run_smoke_and_exit() -> ! {
+    let core = core_ping("d1-smoke".into());
+    let helper = helper_ping();
+    if !core.ok || !helper.accepted {
+        eprintln!("d1 smoke failed: core={core:?} helper={helper:?}");
+        std::process::exit(1);
+    }
+    println!(
+        "d1_smoke_ok core_version={} helper={}",
+        core.core_version, helper.detail
+    );
+    std::process::exit(0);
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    // Run IPC smoke before any window/WebView init so headless CI works.
+    if std::env::var_os("HERTZLINE_D1_SMOKE").is_some() {
+        run_smoke_and_exit();
+    }
+
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![core_ping, helper_ping])
-        .setup(|_app| {
-            if std::env::var_os("HERTZLINE_D1_SMOKE").is_some() {
-                let core = core_ping("d1-smoke".into());
-                let helper = helper_ping();
-                if !core.ok || !helper.accepted {
-                    eprintln!("d1 smoke failed: core={core:?} helper={helper:?}");
-                    std::process::exit(1);
-                }
-                println!(
-                    "d1_smoke_ok core_version={} helper={}",
-                    core.core_version, helper.detail
-                );
-                std::process::exit(0);
-            }
-            Ok(())
-        })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
