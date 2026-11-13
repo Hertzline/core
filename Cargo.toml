@@ -1,0 +1,23 @@
+[workspace]
+resolver = "2"
+members = [
+  "crates/hertzline-core",
+  "spikes/d1-tauri/src-tauri",
+]
+
+[workspace.package]
+edition = "2021"
+license = "MIT"
+repository = "https://github.com/Hertzline/core"
+
+[workspace.dependencies]
+hertzline-core = { path = "crates/hertzline-core" }
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.154"
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+panic = "abort"
+strip = true

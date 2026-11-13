@@ -1,0 +1,144 @@
+# HZ-004 D1 spike CI. Actions pinned to commit SHAs (REPOS.md / RULES.md).
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  core-test:
+    name: core-test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Rust toolchain
+        uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
+        with:
+          toolchain: stable
+
+      - name: Test hertzline-core
+        run: cargo test -p hertzline-core --locked
+        # shortcut: --locked after first Cargo.lock commit; regenerate lock on dep bumps
+
+  d1-tauri-build:
+    name: d1-tauri (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Rust toolchain
+        uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
+        with:
+          toolchain: stable
+
+      - name: Node.js
+        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        with:
+          node-version: "24"
+
+      - name: Linux WebKit deps
+        if: runner.os == 'Linux'
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev patchelf
+
+      - name: Install Tauri CLI deps
+        working-directory: spikes/d1-tauri
+        run: npm ci
+
+      - name: Build d1-tauri (no bundle)
+        working-directory: spikes/d1-tauri
+        run: npx tauri build --no-bundle
+
+      - name: Smoke IPC (Windows)
+        if: runner.os == 'Windows'
+        env:
+          HERTZLINE_D1_SMOKE: "1"
+        shell: pwsh
+        run: |
+          $exe = Get-ChildItem -Path target/release -Filter "d1-tauri.exe" -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
+          if (-not $exe) { $exe = Get-ChildItem -Path spikes/d1-tauri/src-tauri/target/release -Filter "d1-tauri.exe" -ErrorAction SilentlyContinue | Select-Object -First 1 }
+          if (-not $exe) { Get-ChildItem -Path . -Filter "d1-tauri.exe" -Recurse | Select-Object -First 5 FullName; throw "d1-tauri.exe not found" }
+          $sw = [System.Diagnostics.Stopwatch]::StartNew()
+          & $exe.FullName
+          $code = $LASTEXITCODE
+          $sw.Stop()
+          Write-Host "smoke_exit=$code cold_ms=$($sw.ElapsedMilliseconds) path=$($exe.FullName) size=$($exe.Length)"
+          if ($code -ne 0) { exit $code }
+
+      - name: Smoke IPC (Linux xvfb)
+        if: runner.os == 'Linux'
+        env:
+          HERTZLINE_D1_SMOKE: "1"
+        run: |
+          set -euo pipefail
+          sudo apt-get install -y xvfb
+          bin="$(find target/release spikes/d1-tauri/src-tauri/target/release -name d1-tauri -type f 2>/dev/null | head -n1)"
+          test -n "$bin"
+          start=$(date +%s%3N)
+          xvfb-run -a "$bin"
+          end=$(date +%s%3N)
+          echo "smoke_exit=0 cold_ms=$((end-start)) path=$bin size=$(wc -c < "$bin")"
+
+      - name: Smoke IPC (macOS)
+        if: runner.os == 'macOS'
+        env:
+          HERTZLINE_D1_SMOKE: "1"
+        run: |
+          set -euo pipefail
+          bin="$(find target/release spikes/d1-tauri/src-tauri/target/release -name d1-tauri -type f 2>/dev/null | head -n1)"
+          test -n "$bin"
+          start=$(python3 -c 'import time; print(int(time.time()*1000))')
+          "$bin"
+          end=$(python3 -c 'import time; print(int(time.time()*1000))')
+          echo "smoke_exit=0 cold_ms=$((end-start)) path=$bin size=$(wc -c < "$bin")"
+
+  d1-avalonia-build:
+    name: d1-avalonia (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: .NET SDK
+        uses: actions/setup-dotnet@d4c94342e560b34958eacfc5d055d21461ed1c5d # v5.0.0
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Linux Avalonia deps
+        if: runner.os == 'Linux'
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y libx11-dev libx11-xcb-dev libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev libxkbcommon-dev libgl1-mesa-dev
+
+      - name: Build Avalonia spike
+        working-directory: spikes/d1-avalonia
+        run: dotnet build -c Release
+
+      - name: Smoke IPC (no window)
+        working-directory: spikes/d1-avalonia
+        env:
+          HERTZLINE_D1_SMOKE: "1"
+        run: dotnet run -c Release --no-build

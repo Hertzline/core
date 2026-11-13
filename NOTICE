@@ -1,0 +1,22 @@
+Hertzline core
+Copyright (c) 2026 Hertzline
+
+This product includes third-party software. Licenses below were verified from
+official package metadata at implementation time (2026-11-13).
+
+## Rust / crates.io
+
+- serde 1.0.229 -- MIT OR Apache-2.0 (https://crates.io/crates/serde)
+- serde_json 1.0.154 -- MIT OR Apache-2.0 (https://crates.io/crates/serde_json)
+- tauri 2.12.5 -- Apache-2.0 OR MIT (https://crates.io/crates/tauri/2.12.5)
+- tauri-build 2.7.4 -- Apache-2.0 OR MIT (https://crates.io/crates/tauri-build/2.7.4)
+
+## npm
+
+- @tauri-apps/cli 2.12.4 -- Apache-2.0 OR MIT (https://www.npmjs.com/package/@tauri-apps/cli)
+
+## NuGet (Avalonia spike only)
+
+- Avalonia 12.1.6 -- MIT (https://www.nuget.org/packages/Avalonia/12.1.6)
+- Avalonia.Desktop 12.1.6 -- MIT (https://www.nuget.org/packages/Avalonia.Desktop)
+- Avalonia.Themes.Fluent 12.1.6 -- MIT (https://www.nuget.org/packages/Avalonia.Themes.Fluent)

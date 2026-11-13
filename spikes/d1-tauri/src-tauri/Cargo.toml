@@ -1,0 +1,20 @@
+[package]
+name = "d1-tauri"
+version = "0.0.0"
+description = "HZ-004 D1 spike: minimal Tauri window + IPC stub"
+edition = "2021"
+license = "MIT"
+publish = false
+
+[lib]
+name = "d1_tauri_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "=2.7.4", features = [] }
+
+[dependencies]
+hertzline-core = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tauri = { version = "=2.12.5", features = [] }
