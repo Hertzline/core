@@ -711,7 +711,7 @@ mod tests {
     fn refuses_non_chosen_pid() {
         let backend = RefCell::new(MockBackgroundAppsBackend::running(1, r"C:\c.exe"));
         let mut action = BackgroundAppsAction::close(backend, 1, false);
-        assert!(action.apply().and_then(|_| Ok(())).is_ok());
+        assert!(action.apply().map(|_| ()).is_ok());
         // Separate action targeting another pid against same mock refuses.
         let backend2 = RefCell::new(MockBackgroundAppsBackend::running(1, r"C:\c.exe"));
         let err = backend2.close(99).unwrap_err();

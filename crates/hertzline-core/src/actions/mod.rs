@@ -3,14 +3,16 @@
 //! Each action implements [`crate::action::Action`] (apply / restore / verify)
 //! with AC-8.1 explanations. Windows: power, Game Mode, HAGS, priority,
 //! background apps, startup apps, Game Bar, cleanup, storage, drivers, display.
-//! Linux: Feral GameMode, energy profile (ppd/tuned), nice/ionice.
+//! Linux: Feral GameMode, energy profile (ppd/tuned), nice/ionice, compositor
+//! hints, MangoHud, Proton/Wine info, shader cache cleanup.
 
 pub mod linux;
 pub mod windows;
 
 pub use linux::{
-    EnergyProfileAction, FeralGameModeAction, NiceIoniceAction, IOPRIO_CLASS_BE, IOPRIO_CLASS_IDLE,
-    PROFILE_BALANCED, PROFILE_PERFORMANCE, PROFILE_POWER_SAVER,
+    classify_desktop, CompositorHintAction, EnergyProfileAction, FeralGameModeAction,
+    MangoHudAction, NiceIoniceAction, ProtonInfoAction, ShaderCacheAction, IOPRIO_CLASS_BE,
+    IOPRIO_CLASS_IDLE, PROFILE_BALANCED, PROFILE_PERFORMANCE, PROFILE_POWER_SAVER,
 };
 pub use windows::{
     BackgroundAppsAction, CleanupAction, DisplayRefreshAction, DriverCheckAction, GameBarAction,

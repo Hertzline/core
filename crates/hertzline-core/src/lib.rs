@@ -9,6 +9,7 @@
 //! Windows priority / background / startup: HZ-021.
 //! Windows Game Bar / cleanup / storage / drivers / display: HZ-022.
 //! Linux GameMode / energy profile / nice+ionice: HZ-023.
+//! Linux compositor / MangoHud / Proton info / shader cache: HZ-024.
 
 pub mod action;
 pub mod actions;
