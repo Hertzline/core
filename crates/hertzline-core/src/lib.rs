@@ -4,6 +4,7 @@
 //! Benchmark engine: HZ-014. Noise-band verdict: HZ-015.
 //! Snapshot store + change log: HZ-016. Action trait: HZ-017.
 //! Restore-all / crash / uninstall: HZ-018.
+//! Windows System Restore offer gate: HZ-019.
 
 pub mod action;
 pub mod benchmark;
@@ -15,5 +16,6 @@ pub mod restore;
 pub mod sensors;
 pub mod session;
 pub mod snapshot;
+pub mod system_restore;
 
 pub const CRATE_VERSION: &str = env!("CARGO_PKG_VERSION");

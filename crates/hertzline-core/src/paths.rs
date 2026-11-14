@@ -12,6 +12,12 @@ pub const SNAPSHOT_STORE_ENV: &str = "HERTZLINE_SNAPSHOT_STORE";
 /// Default file name under the Hertzline data directory.
 pub const SNAPSHOT_STORE_FILE: &str = "snapshots.json";
 
+/// Environment override for the Windows System Restore offer gate (AC-7.4).
+pub const SYSTEM_RESTORE_GATE_ENV: &str = "HERTZLINE_SYSTEM_RESTORE_GATE";
+
+/// Default file name for the System Restore offer / consent gate.
+pub const SYSTEM_RESTORE_GATE_FILE: &str = "system_restore_gate.json";
+
 /// Resolve the snapshot store path (env override wins).
 pub fn snapshot_store_path() -> PathBuf {
     if let Ok(custom) = std::env::var(SNAPSHOT_STORE_ENV) {
@@ -21,6 +27,17 @@ pub fn snapshot_store_path() -> PathBuf {
         }
     }
     hertzline_data_dir().join(SNAPSHOT_STORE_FILE)
+}
+
+/// Resolve the System Restore gate path (env override wins).
+pub fn system_restore_gate_path() -> PathBuf {
+    if let Ok(custom) = std::env::var(SYSTEM_RESTORE_GATE_ENV) {
+        let trimmed = custom.trim();
+        if !trimmed.is_empty() {
+            return PathBuf::from(trimmed);
+        }
+    }
+    hertzline_data_dir().join(SYSTEM_RESTORE_GATE_FILE)
 }
 
 /// Hertzline per-user data directory (created by callers that need it).
@@ -111,5 +128,18 @@ mod tests {
         let dir = hertzline_data_dir();
         assert!(!dir.as_os_str().is_empty());
         assert!(dir.ends_with("Hertzline") || dir.ends_with("hertzline"));
+    }
+
+    #[test]
+    fn system_restore_gate_env_override_wins() {
+        let _guard = env_lock().lock().unwrap();
+        let previous = std::env::var_os(SYSTEM_RESTORE_GATE_ENV);
+        std::env::set_var(SYSTEM_RESTORE_GATE_ENV, "C:\\tmp\\hz-sr-gate.json");
+        let path = system_restore_gate_path();
+        match previous {
+            Some(value) => std::env::set_var(SYSTEM_RESTORE_GATE_ENV, value),
+            None => std::env::remove_var(SYSTEM_RESTORE_GATE_ENV),
+        }
+        assert_eq!(path, PathBuf::from("C:\\tmp\\hz-sr-gate.json"));
     }
 }
