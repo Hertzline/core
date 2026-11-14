@@ -3,7 +3,7 @@
 use std::fs;
 use std::path::PathBuf;
 
-use super::battlenet::{parse_battlenet_product_db, BATTLENET_PRODUCT_DB_REL};
+use super::battlenet::parse_battlenet_product_db;
 use super::epic::detect_from_manifests_dir;
 use super::gog::detect_from_gog_library;
 use super::heroic::{detect_from_heroic_dir, detect_from_legendary_dir};
@@ -170,9 +170,10 @@ fn default_steam_roots() -> Vec<PathBuf> {
 }
 
 fn default_epic_manifests() -> Vec<PathBuf> {
-    let mut out = Vec::new();
+    // Linux/macOS Epic native launcher is uncommon; Heroic/Legendary cover those.
     #[cfg(windows)]
     {
+        let mut out = Vec::new();
         if let Ok(pd) = std::env::var("ProgramData") {
             let p = PathBuf::from(pd)
                 .join("Epic")
@@ -183,15 +184,18 @@ fn default_epic_manifests() -> Vec<PathBuf> {
                 out.push(p);
             }
         }
+        out
     }
-    // Linux/macOS Epic native launcher is uncommon; Heroic/Legendary cover those.
-    out
+    #[cfg(not(windows))]
+    {
+        Vec::new()
+    }
 }
 
 fn default_gog_libraries() -> Vec<PathBuf> {
-    let mut out = Vec::new();
     #[cfg(windows)]
     {
+        let mut out = Vec::new();
         for key in ["ProgramFiles(x86)", "ProgramFiles"] {
             if let Ok(pf) = std::env::var(key) {
                 let p = PathBuf::from(pf).join("GOG Galaxy").join("Games");
@@ -200,50 +204,66 @@ fn default_gog_libraries() -> Vec<PathBuf> {
                 }
             }
         }
+        out
     }
-    out
+    #[cfg(not(windows))]
+    {
+        Vec::new()
+    }
 }
 
 fn default_xbox_games_roots() -> Vec<PathBuf> {
-    let mut out = Vec::new();
     #[cfg(windows)]
     {
+        let mut out = Vec::new();
         for letter in b'C'..=b'Z' {
             let root = PathBuf::from(format!("{}:\\XboxGames", letter as char));
             if root.is_dir() {
                 out.push(root);
             }
         }
+        out
     }
-    out
+    #[cfg(not(windows))]
+    {
+        Vec::new()
+    }
 }
 
 fn default_gaming_root_files() -> Vec<PathBuf> {
-    let mut out = Vec::new();
     #[cfg(windows)]
     {
+        let mut out = Vec::new();
         for letter in b'C'..=b'Z' {
             let marker = PathBuf::from(format!("{}:\\.GamingRoot", letter as char));
             if marker.is_file() {
                 out.push(marker);
             }
         }
+        out
     }
-    out
+    #[cfg(not(windows))]
+    {
+        Vec::new()
+    }
 }
 
 fn default_battlenet_product_db() -> Vec<PathBuf> {
-    let mut out = Vec::new();
     #[cfg(windows)]
     {
+        let mut out = Vec::new();
         if let Ok(pd) = std::env::var("ProgramData") {
-            let p = PathBuf::from(pd).join(BATTLENET_PRODUCT_DB_REL);
+            let p = PathBuf::from(pd).join(super::battlenet::BATTLENET_PRODUCT_DB_REL);
             if p.is_file() {
                 out.push(p);
             }
         }
+        out
     }
-    out
+    #[cfg(not(windows))]
+    {
+        Vec::new()
+    }
 }
 
 fn default_lutris_games_dirs() -> Vec<PathBuf> {
@@ -261,7 +281,7 @@ fn default_lutris_games_dirs() -> Vec<PathBuf> {
                 out.push(p);
             }
         }
-        return out;
+        out
     }
     #[cfg(not(all(unix, not(target_os = "macos"))))]
     {
