@@ -14,11 +14,13 @@
 //! macOS Game Mode status / background apps / LPM / refresh: HZ-026.
 //! Game detection from documented paths: HZ-027.
 //! Profile apply on start / restore on exit: HZ-028.
+//! Everyday mode: HZ-033.
 
 pub mod action;
 pub mod actions;
 pub mod benchmark;
 pub mod collectors;
+pub mod everyday;
 pub mod frame_capture;
 pub mod games;
 pub mod ipc;

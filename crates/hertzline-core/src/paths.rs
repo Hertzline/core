@@ -24,6 +24,12 @@ pub const ACTIVE_PROFILE_ENV: &str = "HERTZLINE_ACTIVE_PROFILE";
 /// Default file name for the active profile session marker.
 pub const ACTIVE_PROFILE_FILE: &str = "active_profile.json";
 
+/// Environment override for the measurement summary archive (HZ-033 / AC-5.6).
+pub const MEASUREMENT_ARCHIVE_ENV: &str = "HERTZLINE_MEASUREMENT_ARCHIVE";
+
+/// Default file name for archived measurement summaries (weekly health report).
+pub const MEASUREMENT_ARCHIVE_FILE: &str = "measurement_archive.json";
+
 /// Resolve the snapshot store path (env override wins).
 pub fn snapshot_store_path() -> PathBuf {
     if let Ok(custom) = std::env::var(SNAPSHOT_STORE_ENV) {
@@ -56,6 +62,18 @@ pub fn active_profile_path() -> PathBuf {
     }
     hertzline_data_dir().join(ACTIVE_PROFILE_FILE)
 }
+
+/// Resolve the measurement archive path (env override wins).
+pub fn measurement_archive_path() -> PathBuf {
+    if let Ok(custom) = std::env::var(MEASUREMENT_ARCHIVE_ENV) {
+        let trimmed = custom.trim();
+        if !trimmed.is_empty() {
+            return PathBuf::from(trimmed);
+        }
+    }
+    hertzline_data_dir().join(MEASUREMENT_ARCHIVE_FILE)
+}
+
 /// Hertzline per-user data directory (created by callers that need it).
 pub fn hertzline_data_dir() -> PathBuf {
     #[cfg(windows)]
@@ -170,5 +188,18 @@ mod tests {
             None => std::env::remove_var(ACTIVE_PROFILE_ENV),
         }
         assert_eq!(path, PathBuf::from("C:\\tmp\\hz-active-profile.json"));
+    }
+
+    #[test]
+    fn measurement_archive_env_override_wins() {
+        let _guard = env_lock().lock().unwrap();
+        let previous = std::env::var_os(MEASUREMENT_ARCHIVE_ENV);
+        std::env::set_var(MEASUREMENT_ARCHIVE_ENV, "C:\\tmp\\hz-measure-archive.json");
+        let path = measurement_archive_path();
+        match previous {
+            Some(value) => std::env::set_var(MEASUREMENT_ARCHIVE_ENV, value),
+            None => std::env::remove_var(MEASUREMENT_ARCHIVE_ENV),
+        }
+        assert_eq!(path, PathBuf::from("C:\\tmp\\hz-measure-archive.json"));
     }
 }
