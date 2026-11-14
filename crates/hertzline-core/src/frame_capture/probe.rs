@@ -261,7 +261,7 @@ mod tests {
         let json = serde_json::to_string(&report).expect("serialize");
         let back: ProbeReport = serde_json::from_str(&json).expect("deserialize");
         assert_eq!(back.method_id, report.method_id);
-        assert_eq!(back.injects_into_game, false);
+        assert!(!back.injects_into_game);
     }
 
     #[cfg(target_os = "macos")]

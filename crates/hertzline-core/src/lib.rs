@@ -5,8 +5,10 @@
 //! Snapshot store + change log: HZ-016. Action trait: HZ-017.
 //! Restore-all / crash / uninstall: HZ-018.
 //! Windows System Restore offer gate: HZ-019.
+//! Windows power / Game Mode / HAGS: HZ-020.
 
 pub mod action;
+pub mod actions;
 pub mod benchmark;
 pub mod collectors;
 pub mod frame_capture;
