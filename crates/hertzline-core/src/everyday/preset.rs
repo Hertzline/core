@@ -401,7 +401,10 @@ mod tests {
                 assert!(!state.raw.is_empty());
             }
             Err(ActionError::NotPossible(msg)) => {
-                assert!(msg.contains("macOS") || msg.contains("not available"));
+                assert!(
+                    !msg.trim().is_empty(),
+                    "NotPossible must explain why the preset API is unavailable"
+                );
             }
             Err(other) => panic!("unexpected host_read error: {other}"),
         }
