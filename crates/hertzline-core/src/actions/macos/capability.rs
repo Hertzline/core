@@ -1,8 +1,8 @@
-//! Honest macOS capability surface (HZ-025 / AC-4.18, AC-4.23, AC-1.7).
+//! Honest macOS capability surface (HZ-025 / HZ-026 / AC-4.18, AC-4.23, AC-1.7).
 //!
 //! Matrix levels match `ARCHITECTURE.md` OS capability matrix (macOS column).
-//! Not-possible entries never expose a toggle. Partial / deferred actions also
-//! keep `exposes_toggle = false` until a real apply path ships (HZ-026+).
+//! Not-possible entries never expose a toggle. HZ-026 enables toggles only where
+//! a real documented apply path exists (background apps, optional refresh Hz).
 //!
 //! Sources (verified 2026-11-13 / 2026-11-14):
 //! - CVDisplayLink (own-app display sync, not other-process FPS)
@@ -10,6 +10,9 @@
 //! - sysinfo 0.40.3 Gpu: macOS VRAM always None (shared memory)
 //!   https://docs.rs/sysinfo/0.40.3/sysinfo/struct.Gpu.html
 //! - D3 / D4 spikes in `core/spikes/`
+//! - Game Mode: no public status API (WWDC25 / LSSupportsGameMode only)
+//! - LPM: NSProcessInfo.isLowPowerModeEnabled / pmset
+//! - Refresh: CGDisplayModeGetRefreshRate
 
 /// Support level for one capability on macOS (ARCHITECTURE legend).
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -108,7 +111,7 @@ pub fn macos_capability_matrix() -> &'static [MacOsCapability] {
             exposes_toggle: false,
             summary: "session export with identical fields and units",
         },
-        // Actions -- no fake toggles in HZ-025; HZ-026 adds real partial APIs
+        // Actions -- HZ-026 toggles only for real apply paths
         MacOsCapability {
             id: "action.power_plan",
             kind: MacOsCapabilityKind::Action,
@@ -121,7 +124,7 @@ pub fn macos_capability_matrix() -> &'static [MacOsCapability] {
             kind: MacOsCapabilityKind::Action,
             level: MacOsLevel::Partial,
             exposes_toggle: false,
-            summary: "Game Mode status where the OS exposes it (HZ-026); no fake toggle if unsupported",
+            summary: "Game Mode status not possible via public APIs; no fake toggle (AC-4.19)",
         },
         MacOsCapability {
             id: "action.feral_gamemode",
@@ -141,8 +144,8 @@ pub fn macos_capability_matrix() -> &'static [MacOsCapability] {
             id: "action.background_apps",
             kind: MacOsCapabilityKind::Action,
             level: MacOsLevel::Partial,
-            exposes_toggle: false,
-            summary: "documented reversible user actions only (HZ-026)",
+            exposes_toggle: true,
+            summary: "user-chosen PID pause/close via SIGSTOP/SIGTERM; restore SIGCONT or opt-in relaunch (AC-4.20)",
         },
         MacOsCapability {
             id: "action.startup_review",
@@ -183,8 +186,8 @@ pub fn macos_capability_matrix() -> &'static [MacOsCapability] {
             id: "action.refresh_vrr",
             kind: MacOsCapabilityKind::Action,
             level: MacOsLevel::Partial,
-            exposes_toggle: false,
-            summary: "refresh rate check where public APIs allow (HZ-026); VRR often unavailable",
+            exposes_toggle: true,
+            summary: "refresh rate check/set via CGDisplayMode (AC-4.22); VRR unavailable",
         },
         MacOsCapability {
             id: "action.compositor_bypass",
@@ -331,10 +334,23 @@ mod tests {
     }
 
     #[test]
-    fn no_action_toggle_in_hz025() {
-        // automated: HZ-025 ships monitoring + honesty only; HZ-026 adds toggles
+    fn hz026_toggles_only_real_apply_paths() {
+        // automated: Game Mode / LPM stay report-only; background + refresh may toggle
         let surface = MacOsCapabilitySurface::load();
-        assert_eq!(surface.toggleable_actions().count(), 0);
+        let ids: Vec<&str> = surface.toggleable_actions().map(|c| c.id).collect();
+        assert_eq!(ids, vec!["action.background_apps", "action.refresh_vrr"]);
+        let game = surface
+            .capabilities
+            .iter()
+            .find(|c| c.id == "action.game_mode")
+            .expect("game_mode");
+        assert!(!game.exposes_toggle);
+        let power = surface
+            .capabilities
+            .iter()
+            .find(|c| c.id == "action.power_plan")
+            .expect("power_plan");
+        assert!(!power.exposes_toggle);
     }
 
     #[test]

@@ -11,6 +11,7 @@
 //! Linux GameMode / energy profile / nice+ionice: HZ-023.
 //! Linux compositor / MangoHud / Proton info / shader cache: HZ-024.
 //! macOS monitoring + honest capability surface: HZ-025.
+//! macOS Game Mode status / background apps / LPM / refresh: HZ-026.
 
 pub mod action;
 pub mod actions;

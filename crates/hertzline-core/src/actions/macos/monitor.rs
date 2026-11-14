@@ -310,11 +310,13 @@ mod tests {
     }
 
     #[test]
-    fn capability_surface_has_no_fake_toggles() {
+    fn capability_surface_never_toggles_not_possible() {
         let action = MacOsMonitorAction::new(MockMonitorBackend {
             snapshot: labeled_mock_snapshot(),
         });
-        assert_eq!(action.capability_surface().toggleable_actions().count(), 0);
+        for c in action.capability_surface().not_possible() {
+            assert!(!c.exposes_toggle, "{} must not toggle", c.id);
+        }
     }
 
     #[test]
