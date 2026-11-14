@@ -10,6 +10,7 @@
 //! Windows Game Bar / cleanup / storage / drivers / display: HZ-022.
 //! Linux GameMode / energy profile / nice+ionice: HZ-023.
 //! Linux compositor / MangoHud / Proton info / shader cache: HZ-024.
+//! macOS monitoring + honest capability surface: HZ-025.
 
 pub mod action;
 pub mod actions;

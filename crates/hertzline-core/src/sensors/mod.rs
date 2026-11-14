@@ -5,7 +5,9 @@
 
 mod probe;
 
-pub use probe::{probe_sensors, MetricAvailability, MetricId, SensorSource, SensorsProbeReport};
+pub use probe::{
+    probe_sensors, MetricAvailability, MetricId, MetricProbe, SensorSource, SensorsProbeReport,
+};
 
 #[cfg(test)]
 mod tests {

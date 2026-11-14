@@ -5,14 +5,21 @@
 //! background apps, startup apps, Game Bar, cleanup, storage, drivers, display.
 //! Linux: Feral GameMode, energy profile (ppd/tuned), nice/ionice, compositor
 //! hints, MangoHud, Proton/Wine info, shader cache cleanup.
+//! macOS: honest capability surface + supported-metrics monitoring (HZ-025).
 
 pub mod linux;
+pub mod macos;
 pub mod windows;
 
 pub use linux::{
     classify_desktop, CompositorHintAction, EnergyProfileAction, FeralGameModeAction,
     MangoHudAction, NiceIoniceAction, ProtonInfoAction, ShaderCacheAction, IOPRIO_CLASS_BE,
     IOPRIO_CLASS_IDLE, PROFILE_BALANCED, PROFILE_PERFORMANCE, PROFILE_POWER_SAVER,
+};
+pub use macos::{
+    macos_capability_matrix, snapshot_from_host_probes, MacOsCapability, MacOsCapabilityKind,
+    MacOsCapabilitySurface, MacOsLevel, MacOsMonitorAction, MockMonitorBackend, MonitorBackend,
+    MonitorSnapshot, MonitoredMetric, MACOS_HONESTY_BANNER,
 };
 pub use windows::{
     BackgroundAppsAction, CleanupAction, DisplayRefreshAction, DriverCheckAction, GameBarAction,
