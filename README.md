@@ -109,7 +109,7 @@ cargo test -p hertzline-core --locked collectors::
 
 ### Snapshot store (HZ-016 / AC-7.1, AC-7.5)
 
-`snapshot` writes the before-state before a change is recorded. `record_applied` rejects a change that has no matching snapshot. Each change-log row has `time_unix_ms`, `action`, `before`, `after`, and `restore_status`. `SnapshotStore::open(path)` rewrites that JSON before the mutate callback runs. Restore-all / crash hooks are HZ-018. No new crates.
+`snapshot` writes the before-state before a change is recorded. `record_applied` rejects a change that has no matching snapshot. Each change-log row has `time_unix_ms`, `action`, `before`, `after`, and `restore_status`. `SnapshotStore::open(path)` rewrites that JSON before the mutate callback runs. No new crates.
 
 ```bash
 cargo test -p hertzline-core --locked snapshot::
@@ -121,6 +121,14 @@ cargo test -p hertzline-core --locked snapshot::
 
 ```bash
 cargo test -p hertzline-core --locked action::
+```
+
+### Restore all + crash / uninstall (HZ-018 / AC-7.2, AC-7.3)
+
+`restore::restore_all` reverts outstanding change-log rows newest-first and clears pending mid-apply snapshots. `recover_from_crash` reloads the durable store without a UI. Snapshot path: `HERTZLINE_SNAPSHOT_STORE` or the OS user-data default (`paths`). Missing action handlers are reported; entries are never silently marked restored. Crash-rollback tests use labeled mocks.
+
+```bash
+cargo test -p hertzline-core --locked restore::
 ```
 
 ## License

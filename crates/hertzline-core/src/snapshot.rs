@@ -4,7 +4,7 @@
 //! When the store is opened on a path, that JSON is written to disk first.
 //! `record_applied` appends a change-log row only if the token matches that
 //! snapshot. The row lists time, action, before, after, and restore status.
-//! Action apply/restore/verify is HZ-017; restore-all / crash hooks are HZ-018.
+//! Action apply/restore/verify is HZ-017. Restore-all / crash hooks: `restore`.
 //! This module only stores state and status.
 
 use std::path::{Path, PathBuf};

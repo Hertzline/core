@@ -148,6 +148,11 @@ pub trait Action {
     fn verify(&self, expected: &str) -> Result<VerifyResult, ActionError>;
 }
 
+/// Lookup of registered actions by id (restore-all / crash recovery).
+pub trait ActionMap {
+    fn get_mut(&mut self, id: &str) -> Option<&mut dyn Action>;
+}
+
 /// Snapshot, apply, record, then verify the after-state (AC-7.1).
 ///
 /// `apply` is not called if the snapshot fails. On apply failure the pending
