@@ -190,12 +190,11 @@ pub mod os {
         ] {
             let path = home.join(rel);
             if path.is_dir() {
-                // Dedup by canonical if possible
-                let key = fs::canonicalize(&path).unwrap_or(path.clone());
-                if !roots
+                let key = fs::canonicalize(&path).unwrap_or_else(|_| path.clone());
+                let already = roots
                     .iter()
-                    .any(|r| fs::canonicalize(r).unwrap_or_else(|_| r.clone()) == key)
-                {
+                    .any(|r: &PathBuf| fs::canonicalize(r).unwrap_or_else(|_| r.clone()) == key);
+                if !already {
                     roots.push(path);
                 }
             }
