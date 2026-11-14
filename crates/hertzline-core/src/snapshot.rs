@@ -4,7 +4,8 @@
 //! When the store is opened on a path, that JSON is written to disk first.
 //! `record_applied` appends a change-log row only if the token matches that
 //! snapshot. The row lists time, action, before, after, and restore status.
-//! OS undo is HZ-017 / HZ-018; this module only stores state and status.
+//! Action apply/restore/verify is HZ-017; restore-all / crash hooks are HZ-018.
+//! This module only stores state and status.
 
 use std::path::{Path, PathBuf};
 
@@ -56,7 +57,7 @@ impl SnapshotToken {
 pub enum RestoreStatus {
     /// Applied and not yet restored.
     Outstanding,
-    /// Marked restored. The OS revert itself is HZ-017 / HZ-018.
+    /// Marked restored after a successful action restore (HZ-017+).
     Restored,
 }
 

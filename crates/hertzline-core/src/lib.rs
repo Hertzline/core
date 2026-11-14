@@ -2,8 +2,9 @@
 //!
 //! No UI. No permanent elevation. Frame pipeline: HZ-011. Collectors: HZ-012.
 //! Benchmark engine: HZ-014. Noise-band verdict: HZ-015.
-//! Snapshot store + change log: HZ-016.
+//! Snapshot store + change log: HZ-016. Action trait: HZ-017.
 
+pub mod action;
 pub mod benchmark;
 pub mod collectors;
 pub mod frame_capture;

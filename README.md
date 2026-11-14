@@ -109,10 +109,18 @@ cargo test -p hertzline-core --locked collectors::
 
 ### Snapshot store (HZ-016 / AC-7.1, AC-7.5)
 
-`snapshot` writes the before-state before a change is recorded. `record_applied` rejects a change that has no matching snapshot. Each change-log row has `time_unix_ms`, `action`, `before`, `after`, and `restore_status`. `SnapshotStore::open(path)` rewrites that JSON before the mutate callback runs. OS undo is later (HZ-017 / HZ-018). No new crates.
+`snapshot` writes the before-state before a change is recorded. `record_applied` rejects a change that has no matching snapshot. Each change-log row has `time_unix_ms`, `action`, `before`, `after`, and `restore_status`. `SnapshotStore::open(path)` rewrites that JSON before the mutate callback runs. Restore-all / crash hooks are HZ-018. No new crates.
 
 ```bash
 cargo test -p hertzline-core --locked snapshot::
+```
+
+### Action trait (HZ-017 / AC-7.1, AC-8.1)
+
+`action` defines `Action` with `apply` / `restore` / `verify`, plus `ActionExplanation` (`what`, `expected_effect`, `risk`, `how_to_undo`, local-measurement note). `apply_with_snapshot` snapshots before mutate; `restore_with_log` restores, verifies, and marks the change log. Unit tests use labeled `MockToggleAction` (in-memory only). No new crates.
+
+```bash
+cargo test -p hertzline-core --locked action::
 ```
 
 ## License
