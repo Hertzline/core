@@ -12,9 +12,7 @@ fn core_ping(client: String) -> PingResponse {
 
 #[tauri::command]
 fn helper_ping() -> hertzline_core::ipc::HelperResponse {
-    helper_dispatch(&HelperRequest {
-        op: HelperOp::Ping,
-    })
+    helper_dispatch(&HelperRequest { op: HelperOp::Ping })
 }
 
 fn run_smoke_and_exit() -> ! {
