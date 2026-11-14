@@ -6,6 +6,8 @@
 //! Restore-all / crash / uninstall: HZ-018.
 //! Windows System Restore offer gate: HZ-019.
 //! Windows power / Game Mode / HAGS: HZ-020.
+//! Windows priority / background / startup: HZ-021.
+//! Windows Game Bar / cleanup / storage / drivers / display: HZ-022.
 
 pub mod action;
 pub mod actions;
