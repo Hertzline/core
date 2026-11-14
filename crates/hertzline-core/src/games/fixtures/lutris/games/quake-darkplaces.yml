@@ -1,0 +1,5 @@
+game:
+  exe: /home/user/Games/quake/darkplaces
+  working_dir: /home/user/Games/quake
+name: Quake
+slug: quake

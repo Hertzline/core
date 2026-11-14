@@ -12,12 +12,14 @@
 //! Linux compositor / MangoHud / Proton info / shader cache: HZ-024.
 //! macOS monitoring + honest capability surface: HZ-025.
 //! macOS Game Mode status / background apps / LPM / refresh: HZ-026.
+//! Game detection from documented paths: HZ-027.
 
 pub mod action;
 pub mod actions;
 pub mod benchmark;
 pub mod collectors;
 pub mod frame_capture;
+pub mod games;
 pub mod ipc;
 pub mod paths;
 pub mod restore;

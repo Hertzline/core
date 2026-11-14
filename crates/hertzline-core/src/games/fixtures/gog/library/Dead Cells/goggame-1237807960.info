@@ -1,0 +1,14 @@
+{
+  "clientId": "50227812873380374",
+  "gameId": "1237807960",
+  "language": "English",
+  "languages": ["en-US"],
+  "name": "Dead Cells",
+  "playTasks": [
+    {
+      "isPrimary": true,
+      "path": "deadcells.exe",
+      "type": "FileTask"
+    }
+  ]
+}

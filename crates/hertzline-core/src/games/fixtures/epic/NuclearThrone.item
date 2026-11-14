@@ -1,0 +1,10 @@
+{
+  "FormatVersion": 0,
+  "AppName": "Turaco",
+  "CatalogItemId": "3524134c7a4e4cf2832d8d2a634baef8",
+  "DisplayName": "Nuclear Throne",
+  "InstallationGuid": "0B5BCCB6454D17D42D663B9E3C28B935",
+  "InstallLocation": "D:\\Epic Games\\NuclearThrone",
+  "LaunchExecutable": "NuclearThrone.exe",
+  "bIsApplication": true
+}
