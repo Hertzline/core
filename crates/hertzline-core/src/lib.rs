@@ -8,6 +8,7 @@
 //! Windows power / Game Mode / HAGS: HZ-020.
 //! Windows priority / background / startup: HZ-021.
 //! Windows Game Bar / cleanup / storage / drivers / display: HZ-022.
+//! Linux GameMode / energy profile / nice+ionice: HZ-023.
 
 pub mod action;
 pub mod actions;
