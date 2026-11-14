@@ -18,6 +18,12 @@ pub const SYSTEM_RESTORE_GATE_ENV: &str = "HERTZLINE_SYSTEM_RESTORE_GATE";
 /// Default file name for the System Restore offer / consent gate.
 pub const SYSTEM_RESTORE_GATE_FILE: &str = "system_restore_gate.json";
 
+/// Environment override for the active per-game profile marker (HZ-028 / AC-3.4).
+pub const ACTIVE_PROFILE_ENV: &str = "HERTZLINE_ACTIVE_PROFILE";
+
+/// Default file name for the active profile session marker.
+pub const ACTIVE_PROFILE_FILE: &str = "active_profile.json";
+
 /// Resolve the snapshot store path (env override wins).
 pub fn snapshot_store_path() -> PathBuf {
     if let Ok(custom) = std::env::var(SNAPSHOT_STORE_ENV) {
@@ -40,6 +46,16 @@ pub fn system_restore_gate_path() -> PathBuf {
     hertzline_data_dir().join(SYSTEM_RESTORE_GATE_FILE)
 }
 
+/// Resolve the active profile marker path (env override wins).
+pub fn active_profile_path() -> PathBuf {
+    if let Ok(custom) = std::env::var(ACTIVE_PROFILE_ENV) {
+        let trimmed = custom.trim();
+        if !trimmed.is_empty() {
+            return PathBuf::from(trimmed);
+        }
+    }
+    hertzline_data_dir().join(ACTIVE_PROFILE_FILE)
+}
 /// Hertzline per-user data directory (created by callers that need it).
 pub fn hertzline_data_dir() -> PathBuf {
     #[cfg(windows)]
@@ -141,5 +157,18 @@ mod tests {
             None => std::env::remove_var(SYSTEM_RESTORE_GATE_ENV),
         }
         assert_eq!(path, PathBuf::from("C:\\tmp\\hz-sr-gate.json"));
+    }
+
+    #[test]
+    fn active_profile_env_override_wins() {
+        let _guard = env_lock().lock().unwrap();
+        let previous = std::env::var_os(ACTIVE_PROFILE_ENV);
+        std::env::set_var(ACTIVE_PROFILE_ENV, "C:\\tmp\\hz-active-profile.json");
+        let path = active_profile_path();
+        match previous {
+            Some(value) => std::env::set_var(ACTIVE_PROFILE_ENV, value),
+            None => std::env::remove_var(ACTIVE_PROFILE_ENV),
+        }
+        assert_eq!(path, PathBuf::from("C:\\tmp\\hz-active-profile.json"));
     }
 }

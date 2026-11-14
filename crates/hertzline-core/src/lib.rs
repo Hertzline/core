@@ -13,6 +13,7 @@
 //! macOS monitoring + honest capability surface: HZ-025.
 //! macOS Game Mode status / background apps / LPM / refresh: HZ-026.
 //! Game detection from documented paths: HZ-027.
+//! Profile apply on start / restore on exit: HZ-028.
 
 pub mod action;
 pub mod actions;
@@ -22,6 +23,7 @@ pub mod frame_capture;
 pub mod games;
 pub mod ipc;
 pub mod paths;
+pub mod profiles;
 pub mod restore;
 pub mod sensors;
 pub mod session;
