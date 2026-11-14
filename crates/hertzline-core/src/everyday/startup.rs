@@ -72,6 +72,7 @@ pub fn estimate_startup_impact(entry: &StartupEntry) -> (StartupImpactKind, Stri
     }
 }
 
+#[cfg(any(windows, test))]
 fn rows_from_entries(entries: Vec<StartupEntry>) -> Vec<StartupImpactRow> {
     entries
         .into_iter()
