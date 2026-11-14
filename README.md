@@ -107,6 +107,14 @@ Missing sensors are labeled unavailable. Unit tests use labeled mocks.
 cargo test -p hertzline-core --locked collectors::
 ```
 
+### Snapshot store (HZ-016 / AC-7.1, AC-7.5)
+
+`snapshot` writes the before-state before a change is recorded. `record_applied` rejects a change that has no matching snapshot. Each change-log row has `time_unix_ms`, `action`, `before`, `after`, and `restore_status`. `SnapshotStore::open(path)` rewrites that JSON before the mutate callback runs. OS undo is later (HZ-017 / HZ-018). No new crates.
+
+```bash
+cargo test -p hertzline-core --locked snapshot::
+```
+
 ## License
 
 [MIT](LICENSE)
