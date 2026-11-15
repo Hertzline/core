@@ -1,5 +1,5 @@
 # cargo-deny 0.20.2 -- licenses for Hertzline/core (MIT distribution).
-# Verified against EmbarkStudios cargo-deny docs 2026-11-13.
+# Verified against EmbarkStudios cargo-deny docs 2026-11-13; re-checked HZ-056 2026-11-15.
 # CI runs: cargo deny check licenses
 #
 # MPL-2.0 appears only via Tauri spike transitive crates (cssparser stack /

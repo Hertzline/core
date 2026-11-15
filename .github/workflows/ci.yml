@@ -1,6 +1,6 @@
-# Measurement CI matrix (HZ-013): windows/ubuntu/macos + lint + license audit.
+# Measurement CI matrix (HZ-013 / HZ-056): windows/ubuntu/macos + lint + license audit.
 # Actions and reusable workflows pinned to commit SHAs (REPOS.md / RULES.md).
-# Hertzline/.github pin: f4f947f31a5da82d0ca4828917490d2a1d1217b0 (HZ-003).
+# Hertzline/.github pin: f4f947f31a5da82d0ca4828917490d2a1d1217b0 (HZ-003 / HZ-056).
 name: ci
 
 on:
@@ -38,6 +38,9 @@ jobs:
         with:
           toolchain: stable
           components: rustfmt, clippy
+
+      - name: HZ-056 hardening gate
+        run: python scripts/check_hz056.py
 
       - name: rustfmt
         run: cargo fmt -p hertzline-core -- --check
