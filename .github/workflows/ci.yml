@@ -42,6 +42,9 @@ jobs:
       - name: HZ-056 hardening gate
         run: python scripts/check_hz056.py
 
+      - name: HZ-057 integration gate
+        run: python scripts/check_hz057.py
+
       - name: rustfmt
         run: cargo fmt -p hertzline-core -- --check
 
@@ -69,6 +72,11 @@ jobs:
         env:
           RUSTFLAGS: "-D warnings"
         run: cargo test -p hertzline-core --locked
+
+      - name: HZ-057 integration tests
+        env:
+          RUSTFLAGS: "-D warnings"
+        run: cargo test -p hertzline-core --test hz057_integration --locked -- --nocapture
 
   d1-tauri-build:
     name: d1-tauri (${{ matrix.os }})

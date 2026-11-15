@@ -16,6 +16,7 @@
 //! Profile apply on start / restore on exit: HZ-028.
 //! Everyday mode: HZ-033.
 //! Optional overlay: HZ-034.
+//! Integration smoke (HZ-057): `tests/hz057_integration.rs`.
 
 pub mod action;
 pub mod actions;
