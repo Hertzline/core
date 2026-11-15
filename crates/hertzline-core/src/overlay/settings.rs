@@ -114,9 +114,11 @@ mod tests {
     #[test]
     fn round_trip_disk() {
         let path = temp_file("round");
-        let mut s = OverlaySettings::default();
-        s.user_enabled = true;
-        s.allow_with_anti_cheat = true;
+        let s = OverlaySettings {
+            user_enabled: true,
+            allow_with_anti_cheat: true,
+            ..Default::default()
+        };
         save_settings(&path, &s).unwrap();
         let loaded = load_settings(&path).unwrap();
         assert_eq!(loaded, s);
