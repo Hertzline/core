@@ -1,23 +1,48 @@
-# Hertzline / core
+<div align="center">
+
+<a href="https://github.com/Hertzline/core"><img src="https://capsule-render.vercel.app/api?type=waving&height=180&color=0:0f1412,55:12352c,100:0f6b4c&text=core&fontColor=e8eeeb&fontSize=64&fontAlignY=45&animation=twinkling" alt="Hertzline core" width="100%" /></a>
+
+<img src="https://readme-typing-svg.demolab.com?font=IBM+Plex+Mono&weight=500&size=16&color=2A9B7A&center=true&vCenter=true&width=560&height=34&duration=2800&pause=1200&lines=Measurement+%2B+benchmark+%2B+actions;apply+%2F+restore+%2F+verify;Library+only+--+no+UI;No+unverified+FPS+claims" alt="Hertzline core" />
+
+<p>
+  <a href="https://github.com/Hertzline"><img src="https://skillicons.dev/icons?i=github&theme=dark" width="44" height="44" alt="GitHub" /></a>&nbsp;
+  <a href="https://www.rust-lang.org"><img src="https://skillicons.dev/icons?i=rust&theme=dark" width="44" height="44" alt="Rust" /></a>&nbsp;
+  <a href="https://github.com/Hertzline/app"><img src="https://skillicons.dev/icons?i=tauri&theme=dark" width="44" height="44" alt="Used by app" /></a>
+</p>
+
+</div>
+
+<br/>
+
+<img src="https://capsule-render.vercel.app/api?type=rect&height=3&color=0:0f1412,35:2a9b7a,70:c9a227,100:0f1412" width="100%" alt="" />
+
+<br/>
+
+<p align="center"><img src="https://readme-typing-svg.demolab.com?font=IBM+Plex+Mono&weight=700&size=18&color=2A9B7A&center=true&vCenter=true&width=420&height=40&duration=1&pause=1000000&letterSpacing=6px&lines=WHAT+THIS+REPO+IS" alt="What this repo is" /></p>
 
 Measurement, benchmark, actions (apply / restore / verify), snapshots, profiles, game detection, and export for [Hertzline](https://github.com/Hertzline).
 
 Library only: no UI, no permanent elevation.
 
-## Layout
+<img src="https://capsule-render.vercel.app/api?type=rect&height=3&color=0:0f1412,35:2a9b7a,70:c9a227,100:0f1412" width="100%" alt="" />
+
+<br/>
+
+<p align="center"><img src="https://readme-typing-svg.demolab.com?font=IBM+Plex+Mono&weight=700&size=18&color=2A9B7A&center=true&vCenter=true&width=420&height=40&duration=1&pause=1000000&letterSpacing=6px&lines=LAYOUT" alt="Layout" /></p>
 
 | Path | Role |
 |---|---|
 | `crates/hertzline-core` | Core library |
-| `spikes/d1-tauri` | HZ-004 Option A: Rust + Tauri 2 window + IPC |
-| `spikes/d1-avalonia` | HZ-004 Option B: .NET + Avalonia window + IPC stub |
-| `spikes/D1.md` | Desktop stack decision evidence |
-| `spikes/D3.md` | Frame-time capture decision evidence |
-| `spikes/d3-tools/` | Optional PresentMon download for local probe (gitignored binaries) |
-| `spikes/D4.md` | Sensor sources + license decision evidence |
-| `spikes/d4-licenses/` | Verified license texts (sysinfo MIT; LHM MPL rejected; nvml-wrapper) |
+| `spikes/D1.md` | Desktop stack decision |
+| `spikes/D3.md` | Frame-time capture decision |
+| `spikes/D4.md` | Sensors + license decision |
+| `spikes/d1-tauri` / `spikes/d1-avalonia` | HZ-004 spikes |
 
-## Build
+<img src="https://capsule-render.vercel.app/api?type=rect&height=3&color=0:0f1412,35:2a9b7a,70:c9a227,100:0f1412" width="100%" alt="" />
+
+<br/>
+
+<p align="center"><img src="https://readme-typing-svg.demolab.com?font=IBM+Plex+Mono&weight=700&size=18&color=2A9B7A&center=true&vCenter=true&width=420&height=40&duration=1&pause=1000000&letterSpacing=6px&lines=BUILD" alt="Build" /></p>
 
 ```bash
 cargo test -p hertzline-core --locked
@@ -26,113 +51,30 @@ cargo clippy -p hertzline-core --locked -- -D warnings
 cargo deny check licenses
 ```
 
-CI (`ci` workflow): `windows-latest`, `ubuntu-latest`, `macos-latest` for lint +
-`hertzline-core` tests; shared job runs pin-check + license audit via
-`Hertzline/.github` reusable workflow (SHA pinned in `.github/workflows/ci.yml`).
+CI: `windows-latest`, `ubuntu-latest`, `macos-latest` (lint + tests + pin/license via `Hertzline/.github`).
 
-### D1 Tauri spike
-
-Requires a working [Tauri 2 prerequisites](https://v2.tauri.app/start/prerequisites/) install on the host OS.
+### Probes
 
 ```bash
-cd spikes/d1-tauri
-npm ci
-npx tauri build --no-bundle
-```
-
-Smoke (opens a window briefly, runs IPC, exits):
-
-```bash
-# Windows PowerShell
-$env:HERTZLINE_D1_SMOKE=1
-# path may be workspace target/release/d1-tauri.exe after build
-```
-
-### D1 Avalonia spike
-
-Requires .NET SDK 8+.
-
-```bash
-cd spikes/d1-avalonia
-dotnet build -c Release
-$env:HERTZLINE_D1_SMOKE=1   # PowerShell
-dotnet run -c Release --no-build
-```
-
-### D3 frame-capture probe
-
-```bash
-cargo test -p hertzline-core --locked
 cargo run -p hertzline-core --example d3_probe --locked
-```
-
-On Windows, set `HERTZLINE_PRESENTMON` to a PresentMon 2.6.0 console binary for an `available` probe (see `spikes/d3-tools/README.md`). Real-time ETW needs admin or the Performance Log Users group.
-
-### D4 sensors probe
-
-```bash
-cargo test -p hertzline-core --locked
 cargo run -p hertzline-core --example d4_probe --locked
 ```
 
-Primary stack is `sysinfo` 0.40.3 (MIT). Missing sensors are labeled unavailable. See `spikes/D4.md`.
-
-### Session export (HZ-010 / AC-1.8)
-
-`MeasurementSession` exports CSV and JSON from one ordered field list (identical names and units). Round-trip tests live in `session::export`.
+### Focused suites
 
 ```bash
 cargo test -p hertzline-core --locked session::
-```
-
-### Frame-time pipeline (HZ-011 / AC-1.1, AC-1.5--AC-1.7)
-
-`FramePipeline::open()` probes the host source, ingests PresentMon CSV (`MsBetweenPresents`) or MangoHud logs (`frametime`), then `finish()` / `finish_into(session)` fills avg FPS, 1% / 0.1% lows, and frame-time variance. Probe failure or macOS not-possible yields `Unavailable` (never invented FPS).
-
-```bash
 cargo test -p hertzline-core --locked frame_capture::
-```
-
-### Collectors (HZ-012 / AC-1.2--AC-1.4)
-
-`collectors` fills `HardwareSummary`, `DiskSummary`, and `NetworkSummary` on a session:
-
-- Hardware: `sysinfo` CPU/RAM/GPU/VRAM/temps when exposed; GPU clocks and throttle stay unavailable (D4).
-- Disk: timed `Disk::usage` read/write throughput; queue depth unavailable until an OS path is wired.
-- Network: user-chosen host via injectable ping samples (OS `ping` or mocks); latency, jitter, packet loss.
-
-Missing sensors are labeled unavailable. Unit tests use labeled mocks.
-
-```bash
 cargo test -p hertzline-core --locked collectors::
-```
-
-### Snapshot store (HZ-016 / AC-7.1, AC-7.5)
-
-`snapshot` writes the before-state before a change is recorded. `record_applied` rejects a change that has no matching snapshot. Each change-log row has `time_unix_ms`, `action`, `before`, `after`, and `restore_status`. `SnapshotStore::open(path)` rewrites that JSON before the mutate callback runs. No new crates.
-
-```bash
 cargo test -p hertzline-core --locked snapshot::
-```
-
-### Action trait (HZ-017 / AC-7.1, AC-8.1)
-
-`action` defines `Action` with `apply` / `restore` / `verify`, plus `ActionExplanation` (`what`, `expected_effect`, `risk`, `how_to_undo`, local-measurement note). `apply_with_snapshot` snapshots before mutate; `restore_with_log` restores, verifies, and marks the change log. Unit tests use labeled `MockToggleAction` (in-memory only). No new crates.
-
-```bash
 cargo test -p hertzline-core --locked action::
-```
-
-### Restore all + crash / uninstall (HZ-018 / AC-7.2, AC-7.3)
-
-`restore::restore_all` reverts outstanding change-log rows newest-first and clears pending mid-apply snapshots. `recover_from_crash` reloads the durable store without a UI. Snapshot path: `HERTZLINE_SNAPSHOT_STORE` or the OS user-data default (`paths`). Missing action handlers are reported; entries are never silently marked restored. Crash-rollback tests use labeled mocks.
-
-```bash
 cargo test -p hertzline-core --locked restore::
 ```
 
+<p align="center"><sub><i>Clean measurements are like a well-refereed match: when everything works, nobody invents the score.</i></sub></p>
+
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE) · [NOTICE](NOTICE)
 
-Third-party notices: [NOTICE](NOTICE)
+<img src="https://capsule-render.vercel.app/api?type=waving&section=footer&height=110&color=0:0f1412,55:12352c,100:0f6b4c" alt="" width="100%" />
