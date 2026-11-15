@@ -15,6 +15,7 @@
 //! Game detection from documented paths: HZ-027.
 //! Profile apply on start / restore on exit: HZ-028.
 //! Everyday mode: HZ-033.
+//! Optional overlay: HZ-034.
 
 pub mod action;
 pub mod actions;
@@ -24,6 +25,7 @@ pub mod everyday;
 pub mod frame_capture;
 pub mod games;
 pub mod ipc;
+pub mod overlay;
 pub mod paths;
 pub mod profiles;
 pub mod restore;

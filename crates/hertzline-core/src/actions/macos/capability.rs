@@ -214,8 +214,9 @@ pub fn macos_capability_matrix() -> &'static [MacOsCapability] {
             id: "action.overlay",
             kind: MacOsCapabilityKind::Action,
             level: MacOsLevel::Partial,
+            // Settings live on the Overlay route; not a fake in-game FPS toggle.
             exposes_toggle: false,
-            summary: "optional overlay later (HZ-034); off by default with anti-cheat",
+            summary: "optional Hertzline panel (partial metrics); no external FPS; off by default with anti-cheat (HZ-034)",
         },
         // Safety
         MacOsCapability {
