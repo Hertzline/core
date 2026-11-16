@@ -5,7 +5,9 @@
 //! report. Mutating steps reuse the Action trait + snapshot store.
 
 mod cleanup;
+mod desk_mode;
 mod hogs;
+mod power_source;
 mod preset;
 mod startup;
 mod thermal;
@@ -15,10 +17,14 @@ pub use cleanup::{
     apply_everyday_cleanup, preview_everyday_cleanup, CleanupPath, EverydayCleanupPreview,
     HostEverydayCleanupBackend, MockEverydayCleanupBackend,
 };
+pub use desk_mode::{
+    DeskMode, MODE_PERFORMANCE, MODE_PROGRAMMING, MODE_STUDY,
+};
 pub use hogs::{
     list_resource_hogs, refuse_kill_without_confirm, MockResourceHogsBackend, ResourceHog,
     ResourceHogReport, ResourceHogsBackend, SysinfoResourceHogs,
 };
+pub use power_source::{read_power_source, PowerSource};
 pub use preset::{
     EverydayPreset, HostPowerPresetBackend, MockPowerPresetBackend, PowerPresetAction,
     PowerPresetBackend, PowerPresetState, ACTION_ID as POWER_PRESET_ACTION_ID, PRESET_BALANCED,
